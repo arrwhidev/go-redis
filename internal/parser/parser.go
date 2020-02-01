@@ -1,7 +1,5 @@
 package parser
 
-// General Parser interface
 type Parser interface {
-	Parse() (command string)
+	Parse() (command []string, err error)
 }
-
