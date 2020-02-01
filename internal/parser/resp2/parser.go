@@ -35,12 +35,52 @@ func (p *Parser) Parse() (command []string, err error) {
 	if b != ArrayByte {
 		return nil, errors.New("invalid protocol")
 	}
-	numCommands, err := readNumCommands(p.reader)
 
-	return make([]string, numCommands), nil
+	numCommands, err := readInteger(p.reader)
+	commands := make([]string, numCommands)
+	for i := 0; i < numCommands; i++ {
+		b, err := p.reader.ReadByte()
+		if err != nil {
+			return nil, err
+		}
+
+		if b == BulkStringByte {
+			bulkStr, err := readBulkString(p.reader)
+			if err != nil {
+				return nil, err
+			}
+			commands[0] = bulkStr
+		} else {
+			panic("unsupported") // TODO: temp panic whilst building
+		}
+	}
+
+	return commands, nil
 }
 
-func readNumCommands(reader *bufio.Reader) (int, error) {
+// Read bulk string.
+func readBulkString(reader *bufio.Reader) (string, error) {
+	// Read length of the bulk string.
+	strLen, err := readInteger(reader)
+	if err != nil {
+		return "", err
+	}
+
+	// Read the bulk string.
+	buf := make([]byte, strLen)
+	_, err = reader.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	// Discard the CRLF at the end.
+	reader.Discard(2)
+
+	return string(buf), nil
+}
+
+// Read bytes until CRLF and treat as an integer.
+func readInteger(reader *bufio.Reader) (int, error) {
 	// Read the rest of the bytes until LF.
 	// looks like this; 3\r\n
 	bytes, err := reader.ReadBytes(LF)
@@ -48,14 +88,18 @@ func readNumCommands(reader *bufio.Reader) (int, error) {
 		return 0, err
 	}
 
-	// Strip off the CRLF at the end to get the num of commands.
-	bytes = bytes[:len(bytes)-2]
+	bytes = stripCRLF(bytes)
 
 	// Parse to int.
-	numCommands, err := strconv.Atoi(string(bytes))
+	n, err := strconv.Atoi(string(bytes))
 	if err != nil {
 		return 0, err
 	}
 
-	return numCommands, nil
+	return n, nil
+}
+
+// Strip CRLF from end; 'HELLO\r\n' -> 'HELLO'.
+func stripCRLF(bytes []byte) []byte {
+	return bytes[:len(bytes)-2]
 }
