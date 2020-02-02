@@ -49,7 +49,7 @@ func (p *Parser) Parse() (command []string, err error) {
 			if err != nil {
 				return nil, err
 			}
-			commands[0] = bulkStr
+			commands[i] = bulkStr
 		} else {
 			panic("unsupported") // TODO: temp panic whilst building
 		}
