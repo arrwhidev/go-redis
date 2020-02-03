@@ -14,6 +14,7 @@ func NewExecutor() *Executor {
 var commands = map[string]func([]string) ([]byte, error){
 	"ping": Ping,
 	"echo": Echo,
+	"quit": Quit,
 }
 
 func (e *Executor) Exec(cmd []string) ([]byte, error) {
@@ -31,5 +32,9 @@ func Ping(cmd []string) ([]byte, error) {
 }
 
 func Echo(cmd []string) ([]byte, error) {
-	return CreateSimpleString(cmd[1]), nil
+	return CreateSimpleString(cmd[1]), nil // TODO: handle array oob
+}
+
+func Quit(cmd []string) ([]byte, error) {
+	return CreateSimpleString("OK"), nil
 }

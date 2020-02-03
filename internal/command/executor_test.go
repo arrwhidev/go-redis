@@ -23,3 +23,10 @@ func TestItReturnsMessage_whenEchoCommand(t *testing.T) {
 	res, _ := newExecutor().Exec([]string{"ECHO", "Hello, world"})
 	assert.Equal(t, "+Hello, world\r\n", string(res))
 }
+
+func TestItReturnsOK_whenQuitCommand(t *testing.T) {
+	res, _ := newExecutor().Exec([]string{"QUIT"})
+	assert.Equal(t, "+OK\r\n", string(res))
+}
+
+
