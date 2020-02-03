@@ -3,6 +3,7 @@ package request
 import (
 	"bufio"
 	"fmt"
+	"github.com/arrwhidev/go-redis/internal/command"
 	"github.com/arrwhidev/go-redis/internal/parser/resp2"
 	"net"
 )
@@ -22,12 +23,18 @@ func NewRequest(c net.Conn) *Request {
 func (r *Request) Handle() {
 	p := resp2.NewParser(r.Reader)
 	for {
-		command, err := p.Parse()
+		cmd, err := p.Parse()
 		if err != nil {
-			fmt.Println("failed to parse command")
-			break
+			fmt.Println("failed to parse command", err)
+			return
 		}
 
-		fmt.Println(command)
+		res, err := command.NewExecutor().Exec(cmd)
+		if err != nil {
+			fmt.Println("failed to execute command")
+			return
+		}
+
+		r.Connection.Write(res)
 	}
 }
