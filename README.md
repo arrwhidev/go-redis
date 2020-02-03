@@ -4,4 +4,8 @@ Redis-like in memory cache adhering to the [RESP protocol.](https://redis.io/top
 
 This project is an effort to learn more Go. I've toyed with Go over the years but want a large project focused on data structures and networking to dig deep into the language.
 
-Watch this space...
+Currently supported commands;
+
+ - PING: ✅
+ - SET: In progress
+ - GET: In progress
