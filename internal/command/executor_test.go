@@ -18,3 +18,8 @@ func TestItReturnsPong_whenPingCommand(t *testing.T) {
 	res, _ := newExecutor().Exec([]string{"PING"})
 	assert.Equal(t, "+PONG\r\n", string(res))
 }
+
+func TestItReturnsMessage_whenEchoCommand(t *testing.T) {
+	res, _ := newExecutor().Exec([]string{"ECHO", "Hello, world"})
+	assert.Equal(t, "+Hello, world\r\n", string(res))
+}
