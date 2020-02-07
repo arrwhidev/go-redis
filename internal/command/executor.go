@@ -3,7 +3,9 @@ package command
 import (
 	"fmt"
 	"github.com/arrwhidev/go-redis/internal/store"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type Executor struct {
@@ -45,14 +47,33 @@ func Quit(e *Executor, cmd []string) ([]byte, error) {
 }
 
 func Set(e *Executor, cmd []string) ([]byte, error) {
-	e.Store.Set(cmd[1], cmd[2]) // TODO: handle array oob
+	size := len(cmd)
+	if size < 3 {
+		return CreateError("not enough parts"), nil
+	}
+
+	fmt.Println(cmd)
+
+	var expiry int64 = -1
+	if size > 3 {
+		if cmd[3] == "EX" && size == 5 {
+			seconds, err := strconv.Atoi(cmd[4])
+			if err != nil {
+				// TODO: handle
+			}
+
+			expiry = time.Now().Add(time.Duration(seconds) * time.Second).UnixNano()
+		}
+	}
+
+	e.Store.Set(cmd[1], store.NewEntry(cmd[2], expiry))
 	return CreateSimpleString("OK"), nil
 }
 
 func Get(e *Executor, cmd []string) ([]byte, error) {
 	v, err := e.Store.Get(cmd[1]) // TODO: handle array oob
 	if err == nil {
-		return CreateBulkString(v), nil
+		return CreateBulkString(v.Value), nil
 	}
 	return CreateNilBulkString(), nil
 }

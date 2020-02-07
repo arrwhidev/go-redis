@@ -8,7 +8,7 @@ import (
 )
 
 type Entry struct {
-	value   string
+	Value   string
 	expires int64
 }
 

@@ -26,14 +26,14 @@ func TestSetOverwritesValue_whenKeyExists(t *testing.T) {
 	store.Set("hello", NewEntryWithoutExpiry("world"))
 	store.Set("hello", NewEntryWithoutExpiry("world2"))
 	e, _ := store.Get("hello")
-	assert.Equal(t, "world2", e.value)
+	assert.Equal(t, "world2", e.Value)
 }
 
 func TestItCanSetAndGet(t *testing.T) {
 	store := NewStore()
 	store.Set("hello", NewEntry("world", -1))
 	e, _ := store.Get("hello")
-	assert.Equal(t, "world", e.value)
+	assert.Equal(t, "world", e.Value)
 }
 
 func TestGetReturnsEntry_whenNotExpired(t *testing.T) {
