@@ -13,7 +13,7 @@ type Entry struct {
 }
 
 type Store struct {
-	data map[string]*Entry
+	data map[string]*Entry // TODO: consider sync.Map
 	mu   sync.RWMutex
 }
 
