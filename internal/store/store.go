@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 )
 
 type Entry struct {
-	value string
+	value   string
+	expires int64
 }
 
 type Store struct {
@@ -28,17 +30,27 @@ func NewStore() *Store {
 	return &Store{data: make(map[string]*Entry)}
 }
 
-func (s *Store) Set(key string, value string) {
+func NewEntry(value string, expires int64) *Entry {
+	return &Entry{value, expires}
+}
+
+func (s *Store) Set(key string, value *Entry) {
 	s.mu.Lock()
-	s.data[key] = &Entry{value}
+	s.data[key] = value
 	s.mu.Unlock()
 }
 
-func (s *Store) Get(key string) (string, error) {
+func (s *Store) Get(key string) (*Entry, error) {
 	s.mu.RLock()
-	if v, ok := s.data[key]; ok {
+	if e, ok := s.data[key]; ok {
 		s.mu.RUnlock()
-		return v.value, nil
+		if e.expires == -1 || time.Now().Before(time.Unix(0, e.expires)) {
+			return e, nil
+		}
+
+		s.mu.Lock()
+		delete(s.data, key)
+		s.mu.Unlock()
 	}
-	return "", errors.New(fmt.Sprintf("Key '%s' not found", key))
+	return nil, errors.New(fmt.Sprintf("Key '%s' not found", key))
 }
