@@ -52,8 +52,6 @@ func Set(e *Executor, cmd []string) ([]byte, error) {
 		return CreateError("not enough parts"), nil
 	}
 
-	fmt.Println(cmd)
-
 	var expiry int64 = -1
 	if size > 3 {
 		if cmd[3] == "EX" && size == 5 {
