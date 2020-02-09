@@ -20,3 +20,11 @@ func CreateBulkString(s string) []byte {
 func CreateNilBulkString() []byte {
 	return []byte(fmt.Sprintf("%c-1\r\n", resp2.BulkStringByte))
 }
+
+func CreateArray(arr []string) []byte {
+	res := []byte(fmt.Sprintf("%c%d\r\n", resp2.ArrayByte, len(arr)))
+	for _, s := range arr {
+		res = append(res, CreateBulkString(s)...)
+	}
+	return res
+}

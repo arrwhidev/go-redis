@@ -59,3 +59,15 @@ func TestGetReturnsNil_whenExpired(t *testing.T) {
 	e, _ := store.Get("hello")
 	assert.Nil(t, e)
 }
+
+func TestKeysReturnsAllNonExpiredKeys(t *testing.T) {
+	store := NewStore()
+	store.Set("hello1", NewEntry("world", -1))
+	store.Set("hello2", NewEntry("world", -1))
+	store.Set("hello3", NewEntry("world", -1))
+	store.Set("expired", &Entry{"world", time.Now().Add(-5 * time.Second).UnixNano()})
+
+	keys := store.Keys()
+	assert.Len(t, keys, 3)
+	assert.Contains(t, keys, "hello1", "hello2", "hello3")
+}

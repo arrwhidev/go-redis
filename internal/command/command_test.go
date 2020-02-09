@@ -24,3 +24,13 @@ func TestCreateNilBulkString(t *testing.T) {
 	cmd := CreateNilBulkString()
 	assert.Equal(t, "$-1\r\n", string(cmd))
 }
+
+func TestCreateArray_whenEmpty(t *testing.T) {
+	cmd := CreateArray([]string{})
+	assert.Equal(t, "*0\r\n", string(cmd))
+}
+
+func TestCreateArray_whenNotEmpty(t *testing.T) {
+	cmd := CreateArray([]string{"hi", "world"})
+	assert.Equal(t, "*2\r\n$2\r\nhi\r\n$5\r\nworld\r\n", string(cmd))
+}

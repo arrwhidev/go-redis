@@ -24,6 +24,7 @@ var commands = map[string]func(*Executor, []string) ([]byte, error){
 	"quit": Quit,
 	"set":  Set,
 	"get":  Get,
+	"keys": Keys,
 }
 
 func (e *Executor) Exec(cmd []string) []byte {
@@ -98,6 +99,17 @@ func Get(e *Executor, cmd []string) ([]byte, error) {
 		return CreateBulkString(v.Value), nil
 	}
 	return CreateNilBulkString(), nil
+}
+
+// https://redis.io/commands/keys
+func Keys(e *Executor, cmd []string) ([]byte, error) {
+	size := len(cmd)
+	if size == 1 {
+		// Minimum command is `SET key value`
+		return nil, errors.New("min args not met")
+	}
+
+	return CreateArray(e.Store.Keys()), nil
 }
 
 func ToTuples(arr []string) (map[string]string, error) {

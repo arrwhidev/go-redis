@@ -54,3 +54,16 @@ func (s *Store) Get(key string) (*Entry, error) {
 	}
 	return nil, errors.New(fmt.Sprintf("Key '%s' not found", key))
 }
+
+func (s *Store) Keys() []string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	keys := make([]string, 0, len(s.data))
+	for k, v := range s.data {
+		if v.Expires == -1 || time.Now().Before(time.Unix(0, v.Expires)) {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}

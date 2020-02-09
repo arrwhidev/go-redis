@@ -53,3 +53,8 @@ func TestLastArgOverwritesEarlier(t *testing.T) {
 	expectedTime := mockNowAdd(time.Duration(1000) * time.Millisecond)
 	assert.Equal(t, expectedTime, e.Expires)
 }
+
+func TestReturnsError_whenOddArgs(t *testing.T) {
+	res := newExecutor().Exec([]string{"SET", "hello", "world", "PX"})
+	assert.Equal(t, "-ERR array length is not even\r\n", string(res))
+}

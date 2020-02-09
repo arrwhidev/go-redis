@@ -11,4 +11,4 @@ Currently supported commands;
  - QUIT: ✅
  - SET: ✅ (EX & PX args)
  - GET: ✅ 
- - KEYS: In progress
+ - KEYS: ✅ (* only)
