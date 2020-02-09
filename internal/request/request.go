@@ -32,12 +32,7 @@ func (r *Request) Handle() {
 			return
 		}
 
-		res, err := command.NewExecutor(r.Store).Exec(cmd)
-		if err != nil {
-			fmt.Println("failed to execute command")
-			return
-		}
-
+		res := command.NewExecutor(r.Store).Exec(cmd)
 		r.Connection.Write(res)
 	}
 }
