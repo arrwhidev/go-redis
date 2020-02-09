@@ -64,6 +64,16 @@ func Set(e *Executor, cmd []string) ([]byte, error) {
 			now := e.Clock.Now()
 			expiry = now.Add(time.Duration(seconds) * time.Second).UnixNano()
 		}
+
+		if cmd[3] == "PX" && size == 5 {
+			ms, err := strconv.Atoi(cmd[4])
+			if err != nil {
+				// TODO: handle
+			}
+
+			now := e.Clock.Now()
+			expiry = now.Add(time.Duration(ms) * time.Millisecond).UnixNano()
+		}
 	}
 	e.Store.Set(cmd[1], store.NewEntry(cmd[2], expiry))
 	return CreateSimpleString("OK"), nil

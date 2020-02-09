@@ -60,7 +60,7 @@ func TestSetReturnsError_whenNotEnoughParts(t *testing.T) {
 	assert.Equal(t, "-ERR not enough parts\r\n", string(res))
 }
 
-func TestSetWithEX(t *testing.T) {
+func TestSetWithEXArgGivesExpiryOfNowPlusSeconds(t *testing.T) {
 	executor := newExecutor()
 	res, _ := executor.Exec([]string{"SET", "hello", "world", "EX", "60"})
 	assert.Equal(t, "+OK\r\n", string(res))
@@ -69,3 +69,17 @@ func TestSetWithEX(t *testing.T) {
 	expectedTime := mockNowAdd(time.Duration(60) * time.Second)
 	assert.Equal(t, expectedTime, e.Expires)
 }
+
+func TestSetWithPXArgGivesExpiryOfNowPlusMilliseconds(t *testing.T) {
+	executor := newExecutor()
+	res, _ := executor.Exec([]string{"SET", "hello", "world", "PX", "1000"})
+	assert.Equal(t, "+OK\r\n", string(res))
+
+	e, _ := executor.Store.Get("hello")
+	expectedTime := mockNowAdd(time.Duration(1000) * time.Millisecond)
+	assert.Equal(t, expectedTime, e.Expires)
+}
+
+
+
+
