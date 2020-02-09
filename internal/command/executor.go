@@ -10,13 +10,14 @@ import (
 
 type Executor struct {
 	Store *store.Store
+	Clock
 }
 
 func NewExecutor(s *store.Store) *Executor {
-	return &Executor{s}
+	return &Executor{s, &realClock{}}
 }
 
-var commands = map[string]func(*Executor, []string) ([]byte, error){
+var commands = map[string]func(*Executor, []string) ([]byte, error) {
 	"ping": Ping,
 	"echo": Echo,
 	"quit": Quit,
@@ -60,10 +61,10 @@ func Set(e *Executor, cmd []string) ([]byte, error) {
 				// TODO: handle
 			}
 
-			expiry = time.Now().Add(time.Duration(seconds) * time.Second).UnixNano()
+			now := e.Clock.Now()
+			expiry = now.Add(time.Duration(seconds) * time.Second).UnixNano()
 		}
 	}
-
 	e.Store.Set(cmd[1], store.NewEntry(cmd[2], expiry))
 	return CreateSimpleString("OK"), nil
 }

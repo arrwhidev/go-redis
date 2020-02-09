@@ -4,10 +4,23 @@ import (
 	"github.com/arrwhidev/go-redis/internal/store"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
+type mockClock struct{}
+func (mockClock) Now() time.Time {
+	return time.Date(2100, time.January, 1, 1, 1, 1, 1, time.Local)
+}
+
+func mockNowAdd(d time.Duration) int64 {
+	c := &mockClock{}
+	return c.Now().Add(d).UnixNano()
+}
+
+//
+
 func newExecutor() *Executor {
-	return NewExecutor(store.NewStore())
+	return &Executor{store.NewStore(), &mockClock{}}
 }
 
 func TestItReturnsUnknown_whenUnknownCommand(t *testing.T) {
@@ -48,6 +61,11 @@ func TestSetReturnsError_whenNotEnoughParts(t *testing.T) {
 }
 
 func TestSetWithEX(t *testing.T) {
-	res, _ := newExecutor().Exec([]string{"SET", "hello", "world", "EX", "60"})
+	executor := newExecutor()
+	res, _ := executor.Exec([]string{"SET", "hello", "world", "EX", "60"})
 	assert.Equal(t, "+OK\r\n", string(res))
+
+	e, _ := executor.Store.Get("hello")
+	expectedTime := mockNowAdd(time.Duration(60) * time.Second)
+	assert.Equal(t, expectedTime, e.Expires)
 }

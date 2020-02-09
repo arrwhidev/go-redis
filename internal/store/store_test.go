@@ -39,10 +39,9 @@ func TestItCanSetAndGet(t *testing.T) {
 func TestGetReturnsEntry_whenNotExpired(t *testing.T) {
 	store := NewStore()
 	future := time.Now().Add(5 * time.Second).UnixNano()
-
 	store.Set("hello", NewEntry("world", future))
 	e, _ := store.Get("hello")
-	assert.Equal(t, future, e.expires)
+	assert.Equal(t, future, e.Expires)
 }
 
 func TestGetReturnsEntry_whenExpiryIsMinus1(t *testing.T) {

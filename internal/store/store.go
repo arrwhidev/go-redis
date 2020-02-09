@@ -9,7 +9,7 @@ import (
 
 type Entry struct {
 	Value   string
-	expires int64
+	Expires int64
 }
 
 type Store struct {
@@ -44,7 +44,7 @@ func (s *Store) Get(key string) (*Entry, error) {
 	s.mu.RLock()
 	if e, ok := s.data[key]; ok {
 		s.mu.RUnlock()
-		if e.expires == -1 || time.Now().Before(time.Unix(0, e.expires)) {
+		if e.Expires == -1 || time.Now().Before(time.Unix(0, e.Expires)) {
 			return e, nil
 		}
 
