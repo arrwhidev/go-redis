@@ -9,5 +9,6 @@ Currently supported commands;
  - PING: ✅
  - ECHO: ✅
  - QUIT: ✅
- - SET: In progress
- - GET: In progress
+ - SET: ✅ (EX & PX args)
+ - GET: ✅ 
+ - KEYS: In progress

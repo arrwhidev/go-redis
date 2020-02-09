@@ -91,6 +91,7 @@ func Set(e *Executor, cmd []string) ([]byte, error) {
 	return CreateSimpleString("OK"), nil
 }
 
+// https://redis.io/commands/get
 func Get(e *Executor, cmd []string) ([]byte, error) {
 	v, err := e.Store.Get(cmd[1]) // TODO: handle array oob
 	if err == nil {
