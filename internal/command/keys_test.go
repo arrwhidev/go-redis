@@ -2,18 +2,19 @@ package command
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestReturnsError_whenNotEnoughArgs(t *testing.T) {
 	res := newExecutor().Exec([]string{"KEYS"})
-	assert.Equal(t, "-ERR min args not met\r\n", string(res))
+	AssertError(t, "min args not met", res)
 }
 
 func TestReturnsEmptyArray_whenNoKeys(t *testing.T) {
 	res := newExecutor().Exec([]string{"KEYS", "*"})
-	assert.Equal(t, "*0\r\n", string(res))
+	AssertEmptyArray(t, res)
 }
 
 func TestReturnsPopulatedArray_whenHasKeys(t *testing.T) {
