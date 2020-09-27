@@ -12,3 +12,13 @@ Currently supported commands;
  - SET: ✅ (EX & PX args)
  - GET: ✅ 
  - KEYS: ✅ (* only)
+
+## Running locally
+
+To start the server;
+
+    go run cmd/main.go
+
+To start a redis-cli (replace with local ip);
+
+    docker run --rm --name redis-cli -it goodsmileduck/redis-cli redis-cli -h 192.168.10.1 -p 6379
