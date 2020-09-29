@@ -25,3 +25,7 @@ func AssertArray(t *testing.T, expected []string, actual []byte) {
 func AssertEmptyArray(t *testing.T, actual []byte) {
 	AssertArray(t, []string{}, actual)
 }
+
+func AssertIntegerReply(t *testing.T, expected int, actual []byte) {
+	assert.Equal(t, string(CreateIntegerReply(expected)), string(actual))
+}

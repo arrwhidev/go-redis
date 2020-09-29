@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+
 	"github.com/arrwhidev/go-redis/internal/parser/resp2"
 )
 
@@ -27,4 +28,8 @@ func CreateArray(arr []string) []byte {
 		res = append(res, CreateBulkString(s)...)
 	}
 	return res
+}
+
+func CreateIntegerReply(i int) []byte {
+	return []byte(fmt.Sprintf(":%d\r\n", i))
 }

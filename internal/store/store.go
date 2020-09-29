@@ -55,6 +55,18 @@ func (s *Store) Get(key string) (*Entry, error) {
 	return nil, errors.New(fmt.Sprintf("Key '%s' not found", key))
 }
 
+func (s *Store) Del(key string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, ok := s.data[key]; ok {
+		delete(s.data, key)
+		return true
+	}
+
+	return false
+}
+
 func (s *Store) Keys() []string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

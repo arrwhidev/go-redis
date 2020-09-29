@@ -1,9 +1,10 @@
 package store
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func NewEntryWithoutExpiry(value string) *Entry {
@@ -58,6 +59,19 @@ func TestGetReturnsNil_whenExpired(t *testing.T) {
 	store.Set("hello", NewEntry("world", past))
 	e, _ := store.Get("hello")
 	assert.Nil(t, e)
+}
+
+func TestDelReturnsTrue_whenDeleted(t *testing.T) {
+	store := NewStore()
+	store.Set("key1", NewEntry("foo", -1))
+	deleted := store.Del("key1")
+	assert.Equal(t, true, deleted)
+}
+
+func TestDelReturnsFalse_whenNotDeleted(t *testing.T) {
+	store := NewStore()
+	deleted := store.Del("key1")
+	assert.Equal(t, false, deleted)
 }
 
 func TestKeysReturnsAllNonExpiredKeys(t *testing.T) {

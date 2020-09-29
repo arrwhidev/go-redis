@@ -11,6 +11,7 @@ Currently supported commands;
  - QUIT: ✅
  - SET: ✅ (EX & PX args)
  - GET: ✅ 
+ - DEL: ✅ 
  - KEYS: ✅ (* only)
 
 ## Running locally

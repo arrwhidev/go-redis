@@ -24,6 +24,7 @@ var commands = map[string]func(*Executor, []string) ([]byte, error){
 	"set":  Set,
 	"get":  Get,
 	"keys": Keys,
+	"del":  Del,
 }
 
 func (e *Executor) Exec(cmd []string) []byte {
