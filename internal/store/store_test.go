@@ -37,6 +37,12 @@ func TestItCanSetAndGet(t *testing.T) {
 	assert.Equal(t, "world", e.Value)
 }
 
+func TestGetReturnsError_whenKeyNotExists(t *testing.T) {
+	store := NewStore()
+	_, err := store.Get("nop")
+	assert.Equal(t, "Key 'nop' not found", err.Error())
+}
+
 func TestGetReturnsEntry_whenNotExpired(t *testing.T) {
 	store := NewStore()
 	future := time.Now().Add(5 * time.Second).UnixNano()
