@@ -3,10 +3,12 @@ package request
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"net"
+
 	"github.com/arrwhidev/go-redis/internal/command"
 	"github.com/arrwhidev/go-redis/internal/parser/resp2"
 	"github.com/arrwhidev/go-redis/internal/store"
-	"net"
 )
 
 type Request struct {
@@ -27,6 +29,10 @@ func (r *Request) Handle() {
 	p := resp2.NewParser(r.Reader)
 	for {
 		cmd, err := p.Parse()
+		if err == io.EOF {
+			return
+		}
+
 		if err != nil {
 			fmt.Println("failed to parse command", err)
 			return
